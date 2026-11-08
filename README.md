@@ -39,6 +39,8 @@ npm run dev:lan
 
 Connect your phone and computer to the same Wi-Fi, then open the `Network` URL printed by Vite on your phone.
 
+局域网 HTTP 地址可以测试页面布局。测试网页按钮唤起手机系统分享，请使用公开的 HTTPS 地址。
+
 ### Fonts
 
 Body text uses a self-hosted LXGW WenKai subset. Titles marked with `.brush` keep the Ma Shan Zheng font. Both are served with the site, and system fonts cover any missing glyphs.
@@ -51,7 +53,7 @@ The dev and build commands generate regular and bold WOFF2 files from the charac
 
 | 文件 | 维护内容 |
 | --- | --- |
-| `content/site.js` | 店名、地址、营业时间、联系电话、导航 |
+| `content/site.js` | 店名、地址、营业时间、联系电话、导航、分享文案 |
 | `content/home.js` | 首页标题、招牌茶单、茶馆空间、三江文化、茶客评价 |
 | `content/menu.js` | 菜单标题、茶饮、早餐、茶点、推荐搭配 |
 | `content/activities.js` | 活动及报名信息、茶馆相册、常见问题 |
@@ -66,3 +68,9 @@ The dev and build commands generate regular and bold WOFF2 files from the charac
 ```sh
 npm run build
 ```
+
+### 分享卡片
+
+手机或平板的页面右上角显示「分享」。在支持系统分享的浏览器里，点击会随机挑选一条欢迎语（连续两次不重复），并直接打开系统分享面板。微信内置浏览器没有提供系统分享时，可从右上角「···」选择「转发给朋友」。收件人打开分享链接后会回到所分享的页面。浏览器菜单分享原始网址时，网页会在进入页面时随机更新预览信息；如果接收端直接抓取网址，则读到静态 HTML 里的默认文案。
+
+正式构建前，在 `.env.production.local` 或部署环境中设置 `SITE_URL=https://你的正式域名`，让分享平台能从卡片标签读到 Logo 的完整 HTTPS 地址。部署完整的 `dist/`，确保 `/share/*.html` 和 Logo 文件可以直接访问，其余页面路径继续走站点的 SPA 回退规则。实际预览样式由接收链接的应用决定。

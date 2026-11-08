@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { siteName } from '@content/site'
+import { updateBrowserShareMetadata } from '@/share'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', name: 'home', alias: '/index.html', meta: { title: '首页' }, component: () => import('@/views/home/index.vue') },
-    { path: '/menu', name: 'menu', alias: '/menu.html', meta: { title: '菜单茶点' }, component: () => import('@/views/menu/index.vue') },
-    { path: '/activities', name: 'activities', alias: '/activities.html', meta: { title: '咨询活动' }, component: () => import('@/views/activities/index.vue') },
-    { path: '/activities/:eventId', name: 'activity-detail', props: true, meta: { title: '活动详情' }, component: () => import('@/views/activities/detail.vue') },
-    { path: '/wulong-memory', name: 'memory', alias: '/wulong-memory.html', meta: { title: '乌龙街记忆' }, component: () => import('@/views/memory/index.vue') },
-    { path: '/guide', name: 'guide', alias: '/guide.html', meta: { title: '到店指南' }, component: () => import('@/views/guide/index.vue') },
+    { path: '/', name: 'home', alias: '/index.html', component: () => import('@/views/home/index.vue') },
+    { path: '/menu', name: 'menu', alias: '/menu.html', component: () => import('@/views/menu/index.vue') },
+    { path: '/activities', name: 'activities', alias: '/activities.html', component: () => import('@/views/activities/index.vue') },
+    { path: '/activities/:eventId', name: 'activity-detail', props: true, component: () => import('@/views/activities/detail.vue') },
+    { path: '/wulong-memory', name: 'memory', alias: '/wulong-memory.html', component: () => import('@/views/memory/index.vue') },
+    { path: '/guide', name: 'guide', alias: '/guide.html', component: () => import('@/views/guide/index.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
   scrollBehavior(to, from, savedPosition) {
@@ -26,8 +26,8 @@ const router = createRouter({
   },
 })
 
-router.afterEach(({ meta }) => {
-  document.title = siteName + ' · ' + meta.title
+router.afterEach((to, from, failure) => {
+  if (!failure && (to.path !== from.path || !from.matched.length)) updateBrowserShareMetadata()
 })
 
 export default router
