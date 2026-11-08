@@ -3,16 +3,12 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { navigation } from '@content/site'
 import SiteBrand from './SiteBrand.vue'
-import SiteShare from './SiteShare.vue'
 import AppIcon from './AppIcon.vue'
 
 const route = useRoute()
 const expanded = ref(false)
 const hidden = ref(false)
 const menuToggle = ref(null)
-const { userAgent, maxTouchPoints } = navigator
-const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent)
-  || (/Macintosh/i.test(userAgent) && maxTouchPoints > 1)
 let scrollEdge = 0
 
 function scrollPosition() {
@@ -70,8 +66,8 @@ function active(link) {
 <template>
   <header id="site-header" class="site-header sticky top-0 z-10 border-b border-line/75 bg-paper/95 pt-[env(safe-area-inset-top)]"
     :class="{ 'is-hidden': hidden }">
-    <div class="site-shell flex min-h-16 items-center justify-between lg:min-h-[74px]" :class="isMobile ? 'gap-2' : 'gap-4'">
-      <SiteBrand :class="isMobile && '[&>svg]:max-sm:w-9 [&>svg]:max-[360px]:hidden'" />
+    <div class="site-shell flex min-h-16 items-center justify-between gap-2 sm:gap-4 lg:min-h-[74px]">
+      <SiteBrand />
       <nav aria-label="主导航" class="hidden items-center gap-[clamp(1.4rem,3vw,3rem)] lg:flex">
         <RouterLink v-for="link in navigation" :key="link.to" :to="link.to"
           class="nav-link whitespace-nowrap py-2 text-[clamp(.8rem,1.15vw,1rem)] font-bold" :class="{ 'is-current': active(link) }"
@@ -79,13 +75,10 @@ function active(link) {
           {{ link.label }}
         </RouterLink>
       </nav>
-      <div class="flex shrink-0 items-center gap-1.5" :class="{ 'lg:hidden': !isMobile }">
-        <SiteShare v-if="isMobile" />
-        <button ref="menuToggle" class="icon-control grid size-11 place-items-center rounded-md border border-line text-xl text-rust lg:hidden" type="button"
-          aria-label="菜单" aria-controls="mobile-nav" :aria-expanded="expanded" @click="toggleMenu">
-          <AppIcon :key="expanded" :name="expanded ? 'close' : 'menu'" class="icon-swap" />
-        </button>
-      </div>
+      <button ref="menuToggle" class="icon-control grid size-11 shrink-0 place-items-center rounded-md border border-line text-xl text-rust lg:hidden" type="button"
+        aria-label="菜单" aria-controls="mobile-nav" :aria-expanded="expanded" @click="toggleMenu">
+        <AppIcon :key="expanded" :name="expanded ? 'close' : 'menu'" class="icon-swap" />
+      </button>
     </div>
     <Transition name="mobile-nav">
       <div v-show="expanded" :inert="!expanded" class="absolute inset-x-0 top-full bg-paper lg:hidden">

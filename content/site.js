@@ -1,4 +1,5 @@
 export const siteName = '三江乌龙街老茶馆'
+export const shareTitle = siteName + '官网'
 export const shareImagePath = 'media/share-logo.jpg'
 export const shareDescriptions = [
   '一杯茶，一段故事，一份老街情怀。三江乌龙街老茶馆，邀你来坐坐，聊聊那些熟悉的人和事。',

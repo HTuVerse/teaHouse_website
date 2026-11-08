@@ -1,13 +1,13 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { shareDescriptions, shareImagePath, sharePagePath, siteName } from '../content/site.js'
+import { shareDescriptions, shareImagePath, sharePagePath, shareTitle, siteName } from '../content/site.js'
 
 function shareMetadata(description, image) {
   return [
     ['name', 'description', description],
     ['property', 'og:type', 'website'],
     ['property', 'og:locale', 'zh_CN'],
-    ['property', 'og:title', siteName],
+    ['property', 'og:title', shareTitle],
     ['property', 'og:description', description],
     ['property', 'og:image', image],
     ['property', 'og:image:type', 'image/jpeg'],
@@ -15,7 +15,7 @@ function shareMetadata(description, image) {
     ['property', 'og:image:height', '800'],
     ['property', 'og:image:alt', siteName + ' Logo'],
     ['name', 'twitter:card', 'summary'],
-    ['name', 'twitter:title', siteName],
+    ['name', 'twitter:title', shareTitle],
     ['name', 'twitter:description', description],
     ['name', 'twitter:image', image],
   ]
@@ -33,7 +33,7 @@ function renderSharePage(description, image) {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${escapeHtml(siteName)}</title>
+    <title>${escapeHtml(shareTitle)}</title>
     ${meta}
     <script>
       const home = new URL('../', location.href)
@@ -84,7 +84,7 @@ export function sharePages(siteUrl) {
     },
     transformIndexHtml() {
       return [
-        { tag: 'title', children: siteName, injectTo: 'head' },
+        { tag: 'title', children: shareTitle, injectTo: 'head' },
         ...shareMetadata(shareDescriptions[0], image).map(([attr, name, content]) => ({
           tag: 'meta', attrs: { [attr]: name, content }, injectTo: 'head',
         })),

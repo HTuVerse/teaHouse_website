@@ -39,8 +39,6 @@ npm run dev:lan
 
 Connect your phone and computer to the same Wi-Fi, then open the `Network` URL printed by Vite on your phone.
 
-局域网 HTTP 地址可以测试页面布局。测试网页按钮唤起手机系统分享，请使用公开的 HTTPS 地址。
-
 ### Fonts
 
 Body text uses a self-hosted LXGW WenKai subset. Titles marked with `.brush` keep the Ma Shan Zheng font. Both are served with the site, and system fonts cover any missing glyphs.
@@ -71,6 +69,6 @@ npm run build
 
 ### 分享卡片
 
-手机或平板的页面右上角显示「分享」。在支持系统分享的浏览器里，点击会随机挑选一条欢迎语（连续两次不重复），并直接打开系统分享面板。微信内置浏览器没有提供系统分享时，可从右上角「···」选择「转发给朋友」。收件人打开分享链接后会回到所分享的页面。浏览器菜单分享原始网址时，网页会在进入页面时随机更新预览信息；如果接收端直接抓取网址，则读到静态 HTML 里的默认文案。
+用户可通过浏览器或微信自带的菜单分享当前页面。网页会在进入页面时随机更新预览文案；如果接收端直接抓取网址，则读到静态 HTML 里的默认文案。此前发出的分享链接仍可打开原页面。
 
 正式构建前，在 `.env.production.local` 或部署环境中设置 `SITE_URL=https://你的正式域名`，让分享平台能从卡片标签读到 Logo 的完整 HTTPS 地址。部署完整的 `dist/`，确保 `/share/*.html` 和 Logo 文件可以直接访问，其余页面路径继续走站点的 SPA 回退规则。实际预览样式由接收链接的应用决定。

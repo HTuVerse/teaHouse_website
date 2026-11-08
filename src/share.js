@@ -1,8 +1,8 @@
 import { shareDescriptions } from '@content/site'
 
-export const shareBase = new URL(import.meta.env.BASE_URL, window.location.origin)
+const shareBase = new URL(import.meta.env.BASE_URL, window.location.origin)
 
-export function chooseShareDescription(previousIndex) {
+function chooseShareDescription(previousIndex) {
   if (previousIndex === undefined) return Math.floor(Math.random() * shareDescriptions.length)
   return (previousIndex + 1 + Math.floor(Math.random() * (shareDescriptions.length - 1))) % shareDescriptions.length
 }
