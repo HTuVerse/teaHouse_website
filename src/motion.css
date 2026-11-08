@@ -1,0 +1,204 @@
+/* Site motion follows the paper, ink and seal of the existing design. */
+@layer components {
+  :root {
+    --ease-settle: cubic-bezier(.2, .7, .25, 1);
+    --ease-ui: cubic-bezier(.22, .65, .36, 1);
+    --ease-entrance: cubic-bezier(.22, .58, .29, 1);
+  }
+
+  .reading-progress { display: none; }
+
+  .site-header.is-hidden:not(:has(:focus-visible)) {
+    translate: 0 -100%;
+    pointer-events: none;
+  }
+
+  .nav-link { transition: color .18s; }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 3px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--color-rust);
+    scale: 0 1;
+    transition: scale .24s var(--ease-settle);
+  }
+  .nav-link:is(.is-current, :focus-visible)::after { scale: 1 1; }
+
+  .btn {
+    transition: background-color .18s, color .18s, border-color .18s, box-shadow .22s,
+      transform .22s var(--ease-ui);
+  }
+  .round-link, .icon-control, .calendar-day, .mobile-nav-link {
+    transition: background-color .18s, color .18s, border-color .18s, transform .18s var(--ease-ui);
+  }
+  :is(.btn, .text-link, .round-link) .action-arrow { transition: transform .22s var(--ease-ui); }
+  .form-field { transition: background-color .18s, border-color .18s, box-shadow .18s; }
+  .form-field:focus {
+    border-color: var(--color-gold);
+    background-color: #fffdf8;
+    box-shadow: 0 0 0 3px #8d613826;
+  }
+
+  .lift-card { transition: transform .26s var(--ease-settle), border-color .26s, box-shadow .26s; }
+  .lift-card:focus-within { border-color: #ad855e; box-shadow: 0 6px 16px #4a2e1520; }
+  .photo-trigger > img { transition: transform .48s var(--ease-settle); }
+  .photo-cue {
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid #fff5e5aa;
+    border-radius: 50%;
+    background: #392016c9;
+    color: #fff5e5;
+    opacity: 0;
+    transform: translateY(3px);
+    transition: opacity .2s, transform .24s var(--ease-settle);
+    pointer-events: none;
+  }
+  .photo-trigger:focus-visible .photo-cue { opacity: 1; transform: none; }
+
+  .faq-item > summary { transition: color .18s, background-color .18s; }
+  .faq-item[open] > summary { color: var(--color-rust); background-color: #eee1cf66; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover::after { scale: 1 1; }
+    .btn:hover:not(:active, :disabled) { box-shadow: 0 4px 10px #4a2e1526; }
+    .lift-card:hover { border-color: #ad855e; box-shadow: 0 7px 18px #4a2e1522; }
+    .photo-trigger:hover .photo-cue { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header:not(:has(:focus-visible)) { transition: translate .26s var(--ease-settle); }
+
+    :is(.btn, .round-link, .icon-control, .calendar-day):active:not(:disabled) { transform: scale(.96); }
+    :is(.btn, .text-link, .round-link):focus-visible .action-arrow { transform: translateX(3px); }
+    .photo-trigger:active > img { transform: scale(.99); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .btn:hover:not(:active, :disabled) { transform: translateY(-2px); }
+      :is(.btn, .text-link, .round-link):hover .action-arrow,
+      .lift-card:hover .text-link .action-arrow { transform: translateX(3px); }
+      .lift-card:hover { transform: translateY(-3px); }
+      .photo-trigger:hover:not(:active) > img { transform: scale(1.055); }
+    }
+
+    .hero-collage, .hero-river-art, .event-hero-photo {
+      animation: scenery-settle 1.7s var(--ease-entrance) backwards;
+    }
+    .hero-slide.is-current { transition: opacity .95s var(--ease-entrance); }
+    .hero-heading > h1, .event-hero-copy > * {
+      animation: ink-arrive .84s var(--ease-entrance) .08s backwards;
+    }
+    .hero-heading > .seal {
+      animation: seal-arrive .66s var(--ease-entrance) .36s backwards;
+    }
+    .hero-subtitle { animation: ink-arrive .72s var(--ease-entrance) .19s backwards; }
+    .hero-description, .event-hero-copy > :nth-child(2) {
+      animation: ink-arrive .74s var(--ease-entrance) .28s backwards;
+    }
+    .hero-actions, .event-hero-copy > :nth-child(3) {
+      animation: ink-arrive .74s var(--ease-entrance) .37s backwards;
+    }
+    .hero-actions:focus-within { animation: none; }
+
+    .reveal-in:not(:focus-within) {
+      animation: paper-arrive .7s var(--ease-entrance) var(--reveal-delay, 0ms) backwards;
+    }
+    .section-heading.reveal-in .heading-rule {
+      transform-origin: left;
+      animation: rule-draw .8s var(--ease-entrance) backwards;
+    }
+    .section-heading.is-centered .heading-rule:first-child { transform-origin: right; }
+
+    .mobile-nav-enter-active, .mobile-nav-leave-active {
+      display: grid;
+      grid-template-rows: 1fr;
+      overflow: hidden;
+      transition: grid-template-rows .26s var(--ease-settle), opacity .2s;
+    }
+    .mobile-nav-enter-from, .mobile-nav-leave-to { grid-template-rows: 0fr; opacity: 0; }
+    .mobile-nav-clip { min-height: 0; }
+    .icon-swap { animation: icon-arrive .24s var(--ease-settle) backwards; }
+    .month-change { animation: month-arrive .28s var(--ease-settle) backwards; }
+    .calendar-result { animation: paper-arrive .28s var(--ease-settle) backwards; }
+    .booking-result-enter-active, .booking-result-leave-active {
+      transition: opacity .22s, translate .22s var(--ease-settle);
+    }
+    .booking-result-enter-from, .booking-result-leave-to { opacity: 0; translate: 0 5px; }
+    .faq-item[open] > :not(summary) { animation: answer-arrive .24s var(--ease-settle) backwards; }
+
+    .detail-dialog, .photo-fullscreen {
+      opacity: 0;
+      transition: opacity .2s, transform .24s var(--ease-settle),
+        display .24s allow-discrete, overlay .24s allow-discrete;
+    }
+    .detail-dialog { transform: translateY(10px) scale(.98); }
+    .photo-fullscreen { transform: scale(.99); }
+    :is(.detail-dialog, .photo-fullscreen)[open] { opacity: 1; transform: none; }
+    .detail-dialog::backdrop {
+      opacity: 0;
+      transition: opacity .24s, display .24s allow-discrete, overlay .24s allow-discrete;
+    }
+    .detail-dialog[open]::backdrop { opacity: 1; }
+    @starting-style {
+      .detail-dialog[open] { opacity: 0; transform: translateY(10px) scale(.98); }
+      .photo-fullscreen[open] { opacity: 0; transform: scale(.99); }
+      .detail-dialog[open]::backdrop { opacity: 0; }
+    }
+
+    @supports (interpolate-size: allow-keywords) and selector(::details-content) {
+      .faq-item { interpolate-size: allow-keywords; }
+      .faq-item::details-content {
+        block-size: 0;
+        overflow: clip;
+        opacity: 0;
+        transition: block-size .28s var(--ease-settle), opacity .22s, content-visibility .28s allow-discrete;
+      }
+      .faq-item[open]::details-content { block-size: auto; opacity: 1; }
+      .faq-item[open] > :not(summary) { animation: none; }
+    }
+
+    @supports (animation-timeline: scroll(root block)) {
+      .reading-progress {
+        display: block;
+        position: fixed;
+        z-index: 20;
+        inset: 0 0 auto;
+        height: 2px;
+        pointer-events: none;
+        transform-origin: left;
+        background: linear-gradient(90deg, #a97042, #84341f);
+        animation: rule-draw auto linear both;
+        animation-timeline: scroll(root block);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link::after,
+    :is(.nav-link, .btn, .round-link, .icon-control, .calendar-day, .mobile-nav-link,
+        .action-arrow, .form-field, .lift-card, .photo-trigger > img, .photo-cue, .faq-item > summary) {
+      transition: none;
+    }
+    .photo-cue { transform: none; }
+  }
+}
+
+@keyframes scenery-settle { from { scale: 1.045; } to { scale: 1; } }
+@keyframes ink-arrive { from { opacity: 0; translate: 0 12px; } }
+@keyframes seal-arrive {
+  from { opacity: 0; transform: scale(1.2) rotate(-9deg); }
+  70% { opacity: 1; transform: scale(.97) rotate(1deg); }
+  to { transform: none; }
+}
+@keyframes paper-arrive { from { opacity: .18; translate: 0 10px; } }
+@keyframes rule-draw { from { scale: 0 1; } to { scale: 1 1; } }
+@keyframes icon-arrive { from { opacity: .35; transform: rotate(-16deg) scale(.85); } }
+@keyframes month-arrive { from { opacity: .4; translate: var(--month-offset, 0px) 0; } }
+@keyframes answer-arrive { from { opacity: .35; } }

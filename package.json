@@ -1,0 +1,34 @@
+{
+  "name": "teahouse-website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fonts:subset": "node scripts/subset-fonts.mjs",
+    "predev": "npm run fonts:subset",
+    "dev": "vite",
+    "predev:lan": "npm run fonts:subset",
+    "dev:lan": "vite --host 0.0.0.0",
+    "prebuild": "npm run fonts:subset",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource/ma-shan-zheng": "^5.3.1",
+    "pinia": "^4.0.3",
+    "vue": "^3.5.42",
+    "vue-router": "^5.3.1"
+  },
+  "devDependencies": {
+    "@fontsource/lxgw-wenkai": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "subset-font": "^2.9.0",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.2.2",
+    "vite-plugin-vue-devtools": "^8.2.1"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  }
+}
