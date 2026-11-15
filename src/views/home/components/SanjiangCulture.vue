@@ -1,58 +1,62 @@
 <script setup>
-import { ref } from 'vue'
 import AppIcon from '@/components/AppIcon.vue'
-import DetailDialog from '@/components/DetailDialog.vue'
+import AttractionCard from '@/components/AttractionCard.vue'
+import CardDetails from '@/components/CardDetails.vue'
+import CardPhoto from '@/components/CardPhoto.vue'
 import SectionHeading from '@/components/SectionHeading.vue'
-import { media } from '@/site'
-import { headings, houWanVillage, morningWineStreet, sanjiangDailyLife } from '@content/home'
+import TwoRowScroll from '@/components/TwoRowScroll.vue'
+import { headings, sanjiangDailyLife } from '@content/home'
+import { attractionGroups } from '@content/memory'
 
-const villageDialog = ref(null)
-const landmarks = [houWanVillage, morningWineStreet]
+const availableAttractions = attractionGroups.flatMap((group) => group.places)
+const landmarks = []
+while (landmarks.length < 3 && availableAttractions.length > 0) {
+  const index = Math.floor(Math.random() * availableAttractions.length)
+  const [place] = availableAttractions.splice(index, 1)
+  landmarks.push(place)
+}
 </script>
 
 <template>
   <section class="page-section band">
     <div class="site-shell">
       <SectionHeading :title="headings.dailyLife.title" :subtitle="headings.dailyLife.subtitle" centered />
-      <div v-reveal.stagger class="grid gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
-        <article v-for="item in sanjiangDailyLife" :key="item.title" class="card min-w-0 p-1.5">
-          <img :src="media(item.image + '.jpg')" :alt="item.alt" class="aspect-[2.5] w-full rounded-lg object-cover" loading="lazy" />
+      <TwoRowScroll :aria-label="headings.dailyLife.title" grid-class="gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <CardDetails v-for="item in sanjiangDailyLife" :key="item.title" :title="item.title"
+          :description="item.detail || item.description" :file="item.image" :alt="item.alt" :photos="item.photos"
+          class="card lift-card min-w-0 p-1.5">
+          <CardPhoto :item="item" class="aspect-[2.5] rounded-lg" />
           <div class="px-2 pt-1.5 pb-2">
             <h3 class="flex items-start gap-1.5 text-lg leading-snug font-bold text-rust xl:text-xl">
               <AppIcon :name="item.icon" class="mt-0.5" />{{ item.title }}
             </h3>
             <p class="mt-1 text-sm leading-relaxed text-ink-soft sm:text-base">{{ item.description }}</p>
           </div>
-        </article>
-      </div>
+        </CardDetails>
+      </TwoRowScroll>
     </div>
   </section>
 
   <section class="page-section band">
     <div class="site-shell">
       <SectionHeading :title="headings.landmarks.title" :subtitle="headings.landmarks.subtitle" centered />
-      <div v-reveal.stagger class="grid gap-3 lg:grid-cols-2">
-        <article v-for="item in landmarks" :key="item.title" class="card lift-card grid min-w-0 gap-3 p-2 sm:grid-cols-[1.05fr_1fr]">
-          <img :src="media(item.image + '.jpg')" :alt="item.alt" class="aspect-[1.86] w-full self-center rounded-lg object-cover object-[50%_36%]" loading="lazy" />
-          <div class="flex flex-col items-start justify-center px-2 pb-1 sm:px-1 sm:py-1">
-            <h3 class="flex items-start gap-1.5 text-xl leading-snug font-bold text-rust">
-              <AppIcon :name="item.icon" class="mt-0.5" />{{ item.title }}
-            </h3>
-            <p class="mt-1 text-sm leading-relaxed text-ink-soft sm:text-base">{{ item.description }}</p>
-            <button v-if="item === houWanVillage" type="button" class="btn btn-primary btn-round mt-2 text-sm" @click="villageDialog.open()">
-              了解后万古村 <AppIcon name="arrow" />
-            </button>
-            <RouterLink v-else to="/wulong-memory#walking-routes" class="btn btn-primary btn-round mt-2 text-sm">
-              走进早酒文化街 <AppIcon name="arrow" />
-            </RouterLink>
-          </div>
-        </article>
+      <div v-reveal.stagger class="grid gap-3 md:grid-cols-3">
+        <AttractionCard v-for="place in landmarks" :key="place.id" :place="place"
+          class="landmark-card attractions-card--compact" />
+      </div>
+      <div class="mt-4 flex justify-center">
+        <RouterLink :to="{ name: 'memory' }" class="btn btn-primary btn-round">
+          走进乌龙街记忆 <AppIcon name="arrow" />
+        </RouterLink>
       </div>
     </div>
-
-    <DetailDialog ref="villageDialog" :title="houWanVillage.title">
-      <img :src="media(houWanVillage.image + '.jpg')" :alt="houWanVillage.alt" class="mb-3 max-h-[60dvh] w-full rounded-lg object-contain" loading="lazy" />
-      <p>{{ houWanVillage.detail }}</p>
-    </DetailDialog>
   </section>
 </template>
+
+<style scoped>
+.landmark-card :deep(.attractions-photo) {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  max-height: 8rem;
+}
+</style>

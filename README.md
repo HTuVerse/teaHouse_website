@@ -55,7 +55,7 @@ The dev and build commands generate regular and bold WOFF2 files from the charac
 | `content/home.js` | 首页标题、招牌茶单、茶馆空间、三江文化、茶客评价 |
 | `content/menu.js` | 菜单标题、茶饮、早餐、茶点、推荐搭配 |
 | `content/activities.js` | 活动及报名信息、茶馆相册、常见问题 |
-| `content/memory.js` | 乌龙街故事、地方风物、游览路线 |
+| `content/memory.js` | 三江周边景点分类、简介与实拍照片 |
 | `content/guide.js` | 门店信息、交通方式、周边去处 |
 | `content/banquet.js` | 多个页面共用的宴席介绍及服务项目 |
 

@@ -12,8 +12,13 @@ export const mapLink = 'https://api.map.baidu.com/direction?' + new URLSearchPar
   src: 'webapp.sanjiang.teahouse',
 })
 const appleMapLink = 'maps://?' + new URLSearchParams({ daddr: address, dirflg: 'd' })
+const webMapOption = { label: '百度地图网页版', description: '无需安装 App，可查看路线', icon: 'pavilion', href: mapLink }
+
+export const isWeChatBrowser = (userAgent = '') => /MicroMessenger/i.test(userAgent)
 
 export function mobileMapOptions({ userAgent = '', platform = '', maxTouchPoints = 0 } = {}) {
+  if (isWeChatBrowser(userAgent)) return [webMapOption]
+
   const isIOS = /iPhone|iPad|iPod/i.test(userAgent) || (platform === 'MacIntel' && maxTouchPoints > 1)
   if (!isIOS && !/Android/i.test(userAgent)) return []
 
@@ -22,7 +27,7 @@ export function mobileMapOptions({ userAgent = '', platform = '', maxTouchPoints
     coord_type: 'bd09ll',
     src: `${isIOS ? 'ios' : 'andr'}.sanjiang.teahouse`,
   })
-  const useIntent = !isIOS && /Chrome\//i.test(userAgent) && !/; wv\)|MicroMessenger/i.test(userAgent)
+  const useIntent = !isIOS && /Chrome\//i.test(userAgent) && !/; wv\)/i.test(userAgent)
   const appLink = (scheme, route, packageName) => useIntent
     ? `intent://${route}#Intent;scheme=${scheme};package=${packageName};end`
     : `${scheme}://${route}`
@@ -39,7 +44,7 @@ export function mobileMapOptions({ userAgent = '', platform = '', maxTouchPoints
       icon: 'pin',
       href: appLink(isIOS ? 'iosamap' : 'androidamap', amapRoute, 'com.autonavi.minimap'),
     },
-    { label: '网页地图', description: '无需安装 App', icon: 'pavilion', href: mapLink },
+    webMapOption,
   ]
 }
 export const media = (file) => import.meta.env.BASE_URL + 'media/' + file

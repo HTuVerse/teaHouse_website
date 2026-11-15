@@ -1,16 +1,36 @@
 <script setup>
 import { onMounted, ref, shallowRef, useId } from 'vue'
-import { mapLink, media, mobileMapOptions } from '@/site'
+import { isWeChatBrowser, mapLink, media, mobileMapOptions } from '@/site'
+import { locationMapAlt } from '@content/guide'
 import { address } from '@content/site'
 import AppIcon from './AppIcon.vue'
 
-defineProps({ compact: Boolean })
+defineProps({ compact: Boolean, staticImage: Boolean })
 
 const mapOptions = shallowRef([])
+const inWeChat = ref(false)
+const copyStatus = ref('')
 const picker = ref(null)
 const pickerTitle = useId()
 
-onMounted(() => { mapOptions.value = mobileMapOptions(navigator) })
+onMounted(() => {
+  inWeChat.value = isWeChatBrowser(navigator.userAgent)
+  mapOptions.value = mobileMapOptions(navigator)
+})
+
+function openPicker() {
+  copyStatus.value = ''
+  picker.value.showModal()
+}
+
+async function copyAddress() {
+  try {
+    await navigator.clipboard.writeText(address)
+    copyStatus.value = '地址已复制，可粘贴到地图 App 搜索。'
+  } catch {
+    copyStatus.value = '请长按上方地址手动复制，再到地图 App 搜索。'
+  }
+}
 
 function closePicker(event) {
   if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
@@ -19,17 +39,18 @@ function closePicker(event) {
 </script>
 
 <template>
-  <figure class="card relative isolate overflow-hidden bg-[#e9eef0]">
-    <a :href="media('location.png')" target="_blank" rel="noopener" aria-label="查看乌龙街老茶馆位置图原图" class="block">
-      <img :src="media('location.png')" alt="乌龙街老茶馆位置图，茶馆在三江镇河街旁、三江艺术馆以北"
+  <figure class="card relative overflow-hidden bg-[#e9eef0]" :class="{ isolate: !staticImage }">
+    <component :is="staticImage ? 'div' : 'a'" class="block"
+      v-bind="staticImage ? {} : { href: media('location.png'), target: '_blank', rel: 'noopener', 'aria-label': '查看乌龙街老茶馆位置图原图' }">
+      <img :src="media('location.png')" :alt="locationMapAlt"
         class="w-full" :class="compact ? 'h-42 object-cover object-[60%_55%] sm:h-42' : 'h-full max-h-[385px] min-h-52 object-cover object-[64%_51%]'"
         width="1583" height="1020" loading="lazy" />
-    </a>
-    <button v-if="mapOptions.length" type="button" aria-haspopup="dialog" class="btn btn-gold absolute right-3 bottom-3 shadow-sm"
-      @click="picker.showModal()">
+    </component>
+    <button v-if="mapOptions.length" type="button" aria-haspopup="dialog" class="btn btn-gold absolute right-3 bottom-3 z-20 shadow-sm"
+      @click="openPicker">
       <AppIcon name="route" /> 导航到店
     </button>
-    <a v-else :href="mapLink" target="_blank" rel="noopener" class="btn btn-gold absolute right-3 bottom-3 shadow-sm">
+    <a v-else :href="mapLink" target="_blank" rel="noopener" class="btn btn-gold absolute right-3 bottom-3 z-20 shadow-sm">
       <AppIcon name="route" /> 导航到店
     </a>
   </figure>
@@ -42,8 +63,8 @@ function closePicker(event) {
       <div aria-hidden="true" class="mx-auto mb-2 h-1 w-9 rounded-full bg-line"></div>
       <div class="flex items-start justify-between gap-3">
         <div>
-          <h2 :id="pickerTitle" class="text-xl font-bold">选择导航软件</h2>
-          <p class="mt-1 text-sm text-ink-soft">目的地：{{ address }}</p>
+          <h2 :id="pickerTitle" class="text-xl font-bold">{{ inWeChat ? '导航到店' : '选择导航软件' }}</h2>
+          <p class="mt-1 text-sm text-ink-soft">目的地：<span class="select-text">{{ address }}</span></p>
         </div>
         <button type="button" autofocus aria-label="关闭" @click="picker.close()"
           class="icon-control grid size-11 shrink-0 place-items-center rounded-full border border-line text-rust hover:bg-sand">
@@ -63,6 +84,11 @@ function closePicker(event) {
           </a>
         </li>
       </ul>
+      <div v-if="inWeChat" class="mt-3 rounded-xl border border-line px-3 py-3">
+        <p class="text-sm text-ink-soft">想用苹果地图、百度地图或高德地图 App？点微信右上角「⋯」，选择「在浏览器打开」，再点一次「导航到店」。</p>
+        <button type="button" class="btn btn-outline mt-2" @click="copyAddress">复制地址</button>
+        <p role="status" class="text-sm text-ink-soft" :class="{ 'mt-2': copyStatus }">{{ copyStatus }}</p>
+      </div>
     </div>
   </dialog>
 </template>

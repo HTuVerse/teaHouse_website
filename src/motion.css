@@ -42,7 +42,7 @@
   }
 
   .lift-card { transition: transform .26s var(--ease-settle), border-color .26s, box-shadow .26s; }
-  .lift-card:focus-within { border-color: #ad855e; box-shadow: 0 6px 16px #4a2e1520; }
+  html:not(.using-touch) .lift-card:focus-within { border-color: #ad855e; box-shadow: 0 6px 16px #4a2e1520; }
   .photo-trigger > img { transition: transform .48s var(--ease-settle); }
   .photo-cue {
     position: absolute;
@@ -88,24 +88,24 @@
       .photo-trigger:hover:not(:active) > img { transform: scale(1.055); }
     }
 
-    .hero-collage, .hero-river-art, .event-hero-photo {
+    .hero-collage, .hero-river-art, .event-hero-photo, .attractions-feature > img {
       animation: scenery-settle 1.7s var(--ease-entrance) backwards;
     }
     .hero-slide.is-current { transition: opacity .95s var(--ease-entrance); }
-    .hero-heading > h1, .event-hero-copy > * {
+    .hero-heading > h1, .event-hero-copy > *, .attractions-copy > * {
       animation: ink-arrive .84s var(--ease-entrance) .08s backwards;
     }
     .hero-heading > .seal {
       animation: seal-arrive .66s var(--ease-entrance) .36s backwards;
     }
     .hero-subtitle { animation: ink-arrive .72s var(--ease-entrance) .19s backwards; }
-    .hero-description, .event-hero-copy > :nth-child(2) {
+    .hero-description, .event-hero-copy > :nth-child(2), .attractions-copy > :nth-child(3) {
       animation: ink-arrive .74s var(--ease-entrance) .28s backwards;
     }
-    .hero-actions, .event-hero-copy > :nth-child(3) {
+    .hero-actions, .event-hero-copy > :nth-child(3), .attractions-copy > nav {
       animation: ink-arrive .74s var(--ease-entrance) .37s backwards;
     }
-    .hero-actions:focus-within { animation: none; }
+    .hero-actions:focus-within, .attractions-copy > nav:focus-within { animation: none; }
 
     .reveal-in:not(:focus-within) {
       animation: paper-arrive .7s var(--ease-entrance) var(--reveal-delay, 0ms) backwards;

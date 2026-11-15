@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { updateBrowserShareMetadata } from '@/share'
 
+const legacyMemoryAnchors = {
+  '#impressions': 'street-life',
+  '#culture-stories': 'arts-history',
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -15,8 +20,13 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition
     if (to.hash) {
-      const target = document.getElementById(to.hash.slice(1))
+      const legacyAnchor = to.name === 'memory' ? legacyMemoryAnchors[to.hash] : undefined
+      const target = document.getElementById(legacyAnchor ?? to.hash.slice(1))
       if (target) {
+        const scrollRegion = target.closest('[data-scroll-region]')
+        if (scrollRegion && scrollRegion.scrollHeight > scrollRegion.clientHeight) {
+          scrollRegion.scrollTop += target.getBoundingClientRect().top - scrollRegion.getBoundingClientRect().top
+        }
         const smooth = to.path === from.path && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
         const headerHeight = document.getElementById('site-header')?.offsetHeight ?? 0
         return { el: target, top: headerHeight + 18, behavior: smooth ? 'smooth' : 'instant' }

@@ -5,13 +5,14 @@ import PhotoPreview from '@/components/PhotoPreview.vue'
 import { media } from '@/site'
 import { address } from '@content/site'
 import { events } from '@content/activities'
-import { eventDateLabel } from './dates'
+import { eventDateLabel, hasEventEnded } from './dates'
 
 const props = defineProps({ eventId: { type: String, required: true } })
 const event = computed(() => events.find(({ id }) => id === props.eventId))
 const booking = computed(() => event.value?.booking)
 const now = ref(Date.now())
-const ended = computed(() => !booking.value || (event.value.endsAt && now.value >= Date.parse(event.value.endsAt)))
+const ended = computed(() => event.value && hasEventEnded(event.value, now.value))
+const recapPhotos = computed(() => (event.value?.recapPhotos ?? []).map(({ image, alt }) => ({ src: media(image), alt })))
 const registrationClosed = computed(() => booking.value?.deadline && now.value >= Date.parse(booking.value.deadline))
 let clock
 
@@ -51,10 +52,18 @@ onUnmounted(() => window.clearInterval(clock))
             </template>
           </div>
 
-          <aside class="card p-4 sm:p-5">
+          <aside v-if="ended || booking" :id="ended ? 'event-recap' : undefined" class="card p-4 sm:p-5">
             <template v-if="ended">
               <h2 class="text-xl font-bold">往期回顾</h2>
               <p class="mt-2">{{ event.endsAt ? '已过原定活动时间，报名已结束。' : '本场活动已结束。' }}</p>
+              <div v-if="recapPhotos.length" class="mt-3">
+                <h3 class="font-bold">活动现场照片</h3>
+                <div class="mt-2 grid grid-cols-2 gap-2">
+                  <PhotoPreview v-for="photo in recapPhotos" :key="photo.src" :src="photo.src" :alt="photo.alt"
+                    :title="event.title + ' · 活动现场'" :photos="recapPhotos"
+                    class="aspect-video rounded-md border border-line" />
+                </div>
+              </div>
               <PhotoPreview v-if="event.poster" :src="media(event.poster)" :alt="event.title + '活动海报'"
                 :title="event.title + ' · 活动海报'" class="btn btn-outline mt-3">
                 <AppIcon name="photo" /> 查看完整活动海报

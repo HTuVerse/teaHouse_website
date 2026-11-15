@@ -1,25 +1,32 @@
 <script setup>
 import AppIcon from './AppIcon.vue'
-import PhotoPreview from './PhotoPreview.vue'
+import CardDetails from './CardDetails.vue'
 import { media } from '@/site'
 import { phone, phoneLink } from '@content/site'
 import { banquet, services } from '@content/banquet'
+
+const photos = [
+  { file: 'hall.jpg', alt: '三江乌龙街老茶馆大堂里，红灯笼下的宾客围桌相聚' },
+  { file: 'sanjiang-pairing.jpg', alt: '空心菜、马蹄、腌萝卜和一杯茶' },
+  { file: 'stage.jpg', alt: '老茶馆的乡土舞台与竹木座席' },
+]
 </script>
 
 <template>
-  <section v-reveal class="card overflow-hidden" aria-labelledby="banquet-promotion-title">
+  <CardDetails v-reveal :title="banquet.titleFirstLine + banquet.titleSecondLine" :photos="photos"
+    class="card overflow-hidden" aria-labelledby="banquet-promotion-title">
     <div class="grid lg:grid-cols-[.85fr_1.15fr]">
       <div class="grid gap-2 bg-sand p-2.5 sm:p-3 lg:grid-rows-[1fr_auto]">
         <figure class="relative min-h-0 overflow-hidden rounded-lg lg:min-h-56">
-          <PhotoPreview :src="media('hall.jpg')" title="茶馆大堂" alt="三江乌龙街老茶馆大堂里，红灯笼下的宾客围桌相聚"
-            class="aspect-[1.9] lg:absolute lg:inset-0 lg:aspect-auto" image-class="object-[center_65%]" />
+          <img :src="media(photos[0].file)" :alt="photos[0].alt" loading="lazy"
+            class="aspect-[1.9] w-full object-cover object-[center_65%] lg:absolute lg:inset-0 lg:h-full lg:aspect-auto" />
           <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent px-3 pt-6 pb-2 text-sm font-bold tracking-wider text-[#fff5e3]">
             {{ banquet.hallCaption }}
           </figcaption>
         </figure>
         <div class="grid grid-cols-2 gap-2">
-          <PhotoPreview :src="media('sanjiang-pairing.jpg')" alt="空心菜、马蹄、腌萝卜和一杯茶" class="aspect-[2.25] rounded-md" />
-          <PhotoPreview :src="media('stage.jpg')" alt="老茶馆的乡土舞台与竹木座席" class="aspect-[2.25] rounded-md" />
+          <img v-for="photo in photos.slice(1)" :key="photo.file" :src="media(photo.file)" :alt="photo.alt"
+            class="aspect-[2.25] w-full rounded-md object-cover" loading="lazy" />
         </div>
       </div>
 
@@ -47,11 +54,19 @@ import { banquet, services } from '@content/banquet'
         <p class="mt-0.5 text-sm text-[#f7e5cd]">{{ banquet.bookingHint }}</p>
       </div>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <a :href="phoneLink" class="btn btn-round bg-[#fff2dc] py-2 text-rust hover:bg-sand focus-visible:outline-[#fff2dc]">
+        <a :href="phoneLink" class="btn btn-round relative z-20 bg-[#fff2dc] py-2 text-rust hover:bg-sand focus-visible:outline-[#fff2dc]">
           <AppIcon name="phone" /> {{ banquet.bookingAction }}
         </a>
         <span class="text-sm font-bold whitespace-nowrap tabular-nums">{{ phone }}</span>
       </div>
     </div>
-  </section>
+    <template #description>
+      <p class="font-bold">{{ banquet.tagline }}</p>
+      <p class="mt-2">{{ banquet.description }}</p>
+      <p class="mt-2">{{ banquet.occasions }}</p>
+    </template>
+    <template #actions>
+      <a :href="phoneLink" class="btn btn-primary mt-4"><AppIcon name="phone" /> {{ banquet.bookingAction }}</a>
+    </template>
+  </CardDetails>
 </template>

@@ -29,6 +29,10 @@ export const events = [
     place,
     description: '在茶馆参加破冰游戏、拼豆手作和留言互动，认识新朋友。',
     highlights: ['缘分抱团和你比我猜', '两人协作完成拼豆手作', '心动留言卡由工作人员代为传递'],
+    recapPhotos: [
+      { image: 'event-youth-recap-01.jpg', alt: '联谊活动现场，参与者围坐在老茶馆的茶桌旁' },
+      { image: 'event-youth-recap-02.jpg', alt: '参与者在老茶馆舞台前参与现场互动' },
+    ],
     notes: [
       { label: '签到', text: '14:00 起签到入场。遇不可抗因素，活动适当延期。' },
       { label: '报名对象', text: '联动乡镇机关、企事业单位、各村（社区）的适龄单身青年。' },

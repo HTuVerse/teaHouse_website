@@ -1,12 +1,21 @@
 <script setup>
+import { onMounted, onUnmounted, ref } from 'vue'
 import AppIcon from '@/components/AppIcon.vue'
 import PageHero from '@/components/PageHero.vue'
 import PhotoPreview from '@/components/PhotoPreview.vue'
 import SectionHeading from '@/components/SectionHeading.vue'
+import TwoRowScroll from '@/components/TwoRowScroll.vue'
 import EventCalendar from './components/EventCalendar.vue'
 import EventCard from './components/EventCard.vue'
+import { hasEventEnded } from './dates'
 import { events, faqs, gallery, headings, hero } from '@content/activities'
 import { media } from '@/site'
+
+const now = ref(Date.now())
+let clock
+
+onMounted(() => { clock = window.setInterval(() => { now.value = Date.now() }, 15_000) })
+onUnmounted(() => window.clearInterval(clock))
 </script>
 
 <template>
@@ -22,9 +31,9 @@ import { media } from '@/site'
   <section id="events" class="page-section band">
     <div class="site-shell">
       <SectionHeading :title="headings.events.title" :subtitle="headings.events.subtitle" icon="leaf" />
-      <div v-reveal.stagger class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        <EventCard v-for="event in events" :key="event.id" :event="event" />
-      </div>
+      <TwoRowScroll :aria-label="headings.events.title" grid-class="gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <EventCard v-for="event in events" :key="event.id" :event="event" :ended="hasEventEnded(event, now)" />
+      </TwoRowScroll>
     </div>
   </section>
 

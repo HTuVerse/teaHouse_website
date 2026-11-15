@@ -1,5 +1,7 @@
 <script setup>
 import AppIcon from '@/components/AppIcon.vue'
+import CardDetails from '@/components/CardDetails.vue'
+import CardPhoto from '@/components/CardPhoto.vue'
 import FeatureStrip from '@/components/FeatureStrip.vue'
 import PageHero from '@/components/PageHero.vue'
 import SectionHeading from '@/components/SectionHeading.vue'
@@ -25,15 +27,15 @@ import { media } from '@/site'
   <section class="page-section band">
     <div class="site-shell">
       <SectionHeading :title="headings.heritage.title" :subtitle="headings.heritage.subtitle" icon="pavilion">
-        <RouterLink to="/wulong-memory" class="text-link whitespace-nowrap text-sm">一条乌龙街，半部三江史 <AppIcon name="arrow" /></RouterLink>
+        <RouterLink to="/wulong-memory" class="text-link whitespace-nowrap text-sm">查看三江周边景点 <AppIcon name="arrow" /></RouterLink>
       </SectionHeading>
       <div v-reveal.stagger class="grid gap-x-5 gap-y-4 md:grid-cols-3">
-        <article v-for="item in heritage" :key="item.title" class="min-w-0">
-          <img :src="media(item.image + '.jpg')" :alt="item.alt ?? item.title" class="aspect-[2.5] w-full rounded-lg object-cover" loading="lazy" />
+        <CardDetails v-for="item in heritage" :key="item.title" :title="item.title"
+          :description="item.description" :file="item.image" :alt="item.alt" class="min-w-0 rounded-lg">
+          <CardPhoto :item="item" class="aspect-[2.5] rounded-lg" />
           <h3 class="mt-1 font-display text-xl font-bold">{{ item.title }}</h3>
           <p class="mt-1 text-sm leading-snug sm:text-base">{{ item.description }}</p>
-          <p v-if="item.imageNote" class="mt-1 text-xs text-gold">{{ item.imageNote }}</p>
-        </article>
+        </CardDetails>
       </div>
     </div>
   </section>
@@ -44,14 +46,19 @@ import { media } from '@/site'
     <div class="site-shell">
       <SectionHeading :title="headings.reviews.title" :subtitle="headings.reviews.subtitle" icon="quote" />
       <div v-reveal.stagger class="grid gap-3 md:grid-cols-3">
-        <article v-for="review in reviews" :key="review.name" class="card grid grid-cols-[3rem_1fr] items-start gap-3 p-3">
-          <span class="grid size-12 place-items-center rounded-full bg-sand text-xl text-rust"><AppIcon name="quote" /></span>
+        <CardDetails v-for="review in reviews" :key="review.name" :title="review.name" :file="review.avatar"
+          class="card lift-card grid grid-cols-[3rem_1fr] items-start gap-3 p-3">
+          <img :src="media(review.avatar)" alt="" width="48" height="48" class="size-12 rounded-full bg-sand object-cover" loading="lazy" />
           <div>
             <p class="flex flex-wrap items-center gap-1.5"><strong>{{ review.name }}</strong><span class="rounded-full bg-sand px-2 text-xs">{{ review.from }}</span></p>
             <blockquote class="mt-1 text-sm leading-snug">“{{ review.text }}”</blockquote>
             <p class="mt-0.5 tracking-widest text-rust" aria-label="五星">★★★★★</p>
           </div>
-        </article>
+          <template #description>
+            <p class="mb-1 text-sm">{{ review.from }} <span class="ml-1 tracking-widest text-rust" aria-label="五星">★★★★★</span></p>
+            <blockquote>“{{ review.text }}”</blockquote>
+          </template>
+        </CardDetails>
       </div>
     </div>
   </section>

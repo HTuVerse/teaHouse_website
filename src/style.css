@@ -31,6 +31,7 @@
 @layer base {
   html {
     color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
     --mobile-tab-bar-height: calc(4rem + env(safe-area-inset-bottom));
   }
   @media (width < 64rem) {
@@ -49,10 +50,13 @@
   }
   button, summary { cursor: pointer; }
   :focus-visible { outline: 2px solid var(--color-rust); outline-offset: 3px; }
+  .using-touch :focus-visible:not(input, textarea, select, [contenteditable]) { outline-style: none; }
   ::selection { color: #fff7e7; background: var(--color-rust); }
 }
 
 @layer components {
+  /* The touch handler takes over at the boundary while the finger is down. */
+  .scroll-edge-touch { overscroll-behavior-y: none; }
   .brush { font-family: "Ma Shan Zheng", var(--font-display); font-weight: 400; }
   .site-shell { width: min(100% - clamp(2rem, 6.5vw, 7.5rem), 1420px); margin-inline: auto; }
   .page-section { padding-block: clamp(.9rem, 1.7vw, 1.75rem); }
